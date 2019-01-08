@@ -1,0 +1,27 @@
+#header{
+    color:white;
+    background-color:cornflowerblue;
+    text-align: center;
+    border: none;
+    margin: 0 auto;
+}
+
+.card{
+    margin: 20px auto;
+    width: 90%;
+    border: 1px solid cornflowerblue;
+}
+.card-header{
+    color: white;
+    background-color: cornflowerblue;
+}
+
+.row{
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+}
+hr{
+    margin-top: 0.2rem;
+    margin-bottom: 0.2rem;
+}
