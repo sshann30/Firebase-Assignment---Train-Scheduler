@@ -1,4 +1,4 @@
-  // Initialize Firebase
+ // Initialize Firebase
   var config = {
     apiKey: "AIzaSyCG89sdvMlHnBpoj4tUii0dpMyuT7Xke4w",
     authDomain: "train-f4f93.firebaseapp.com",
@@ -7,46 +7,69 @@
     storageBucket: "train-f4f93.appspot.com",
     messagingSenderId: "299002977137"
   };
-
   firebase.initializeApp(config);
-  var database = firebase.database();
-  
-var trainInfo = {
-    name: ["Test"],
-    destination: ["Test"],
-    first: ["Test"],
-    frequency: ["Test"],
-    
-};
 
-database.ref().set({
-  trainName: trainInfo.name,
-  trainDestination: trainInfo.destination,
-  trainFirstTime: trainInfo.first,
-  trainFrequency: trainInfo.frequency
-})
+// Initial Values
+var database = firebase.database();
+var trainName;
+var destination;
+var firstTrainName;
+var frequency;
+var nextArrival;
+var minutesaway
 
-database.ref().on("value",function(snapshot){
-    var tRow = $("<tr>");
+$("#submit").on("click", function (event) {
+  event.preventDefault();
 
-    // Methods run on jQuery selectors return the selector they we run on
-    // This is why we can create and save a reference to a td in the same statement we update its text
-    var trainNameTd = $("<td>").text(snapshot.val().trainName);
-    var trainDestinationTd = $("<td>").text(snapshot.val().trainDestination);
-    var trainFirstTimeTd = $("<td>").text(snapshot.val().trainFirstTime);
-    var trainFrequencyTd = $("<td>").text(snapshot.val().trainFrequency);
+  var newTrain = {
+  trainName: $("#trainName").val().trim(),
+  destination: $("#destination").val().trim(),
+  firstTrain: $("#firstTrain").val().trim(),
+  frequency: $("#frequency").val().trim(),
+  };
 
-    // Append the newly created table data to the table row
-    tRow.append(
-      trainNameTd,
-      trainDestinationTd,
-      trainFirstTimeTd,
-      trainFrequencyTd
-    );
-    // Append the table row to the table body
-    $("tbody").append(tRow);
+  database.ref().push(newTrain);
+      
+  //empties inputs post submit button
+  $("#trainName").val("");
+  $("#destination").val("");
+  $("#firstTrainTime").val("");
+  $("#frequency").val("");
+
+  });
+
+
+
+
+
+// pushing
+database.ref().on("child_added", function (childSnapshot) {
+  var csv = childSnapshot.val();
+  firstTrainTime = csv.firstTrainTime
+
+//last 5ish lines here
+//
+//
+//
+//
+//
+
+  var tr = $("<tr>");
+
+trainNameTd = $("<td>").text(csv.trainName);
+destinationTd = $("<td>").text(csv.destination);
+frequencyTd = $("<td>").text(csv.frequency);
+
+  tr.append(trainNameTd, destinationTd, frequencyTd)
+
+  $("tbody").append(tr);
+}, function (errorObject) {
+  console.log("Errors handled: " + errorObject.code);
 });
 
-    
+
+
+
+
 
 
