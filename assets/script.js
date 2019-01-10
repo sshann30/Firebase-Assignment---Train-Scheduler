@@ -38,21 +38,17 @@ $("#submit").on("click", function (event) {
 
   });
 
-
-
-
-
 // pushing
 database.ref().on("child_added", function (childSnapshot) {
   var csv = childSnapshot.val();
   firstTrainTime = csv.firstTrainTime
 
-//last 5ish lines here
-//
-//
-//
-//
-//
+//last 5ish lines here (next arrival and minutes away)
+// var firstTimeConverted = moment(sv.firstTrainTime, "HH:mm").subtract(1, "years");
+// var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+// var remainder = diffTime % sv.frequency;
+// var minutesAway = sv.frequency - remainder;
+// var nextArrival = moment().add(minutesAway, "minutes");
 
   var tr = $("<tr>");
 
