@@ -1,17 +1,22 @@
- // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyCG89sdvMlHnBpoj4tUii0dpMyuT7Xke4w",
-    authDomain: "train-f4f93.firebaseapp.com",
-    databaseURL: "https://train-f4f93.firebaseio.com",
-    projectId: "train-f4f93",
-    storageBucket: "train-f4f93.appspot.com",
-    messagingSenderId: "299002977137"
-  };
-  firebase.initializeApp(config);
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyCG89sdvMlHnBpoj4tUii0dpMyuT7Xke4w",
+  authDomain: "train-f4f93.firebaseapp.com",
+  databaseURL: "https://train-f4f93.firebaseio.com",
+  projectId: "train-f4f93",
+  storageBucket: "train-f4f93.appspot.com",
+  messagingSenderId: "299002977137"
+};
+firebase.initializeApp(config);
 
 // Initial Values
 var database = firebase.database();
-var trainName;
+
+database.ref().on("value", function (snapshot) {
+
+})
+
+var trainName; 
 var destination;
 var firstTrainName;
 var frequency;
@@ -21,46 +26,55 @@ var minutesaway
 $("#submit").on("click", function (event) {
   event.preventDefault();
 
+  trainName = $("#trainName").val().trim();
+  destination = $("#destination").val().trim();
+  firstTrain = $("#firstTrain").val().trim();
+  frequency = $("#frequency").val().trim();
+
   var newTrain = {
-  trainName: $("#trainName").val().trim(),
-  destination: $("#destination").val().trim(),
-  firstTrain: $("#firstTrain").val().trim(),
-  frequency: $("#frequency").val().trim(),
+    name: trainName,
+    destination: destination,
+    train: firstTrain,
+    frequency: frequency
   };
 
   database.ref().push(newTrain);
-      
+
   //empties inputs post submit button
   $("#trainName").val("");
   $("#destination").val("");
   $("#firstTrainTime").val("");
   $("#frequency").val("");
 
-  });
+});
 
 // pushing
 database.ref().on("child_added", function (childSnapshot) {
-  var csv = childSnapshot.val();
-  firstTrainTime = csv.firstTrainTime
+  var csv = childSnapshot.val()
+  var Tname = csv.name;
+  var Tdestination = csv.destination;
+  var Ttrain = csv.train;
+  var Tfrequency = csv.frequency;
 
-//last 5ish lines here (next arrival and minutes away)
-// var firstTimeConverted = moment(sv.firstTrainTime, "HH:mm").subtract(1, "years");
-// var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
-// var remainder = diffTime % sv.frequency;
-// var minutesAway = sv.frequency - remainder;
-// var nextArrival = moment().add(minutesAway, "minutes");
 
-  var tr = $("<tr>");
+  // last 5ish lines here (next arrival and minutes away)
+  var firstTimeConverted = moment(Ttrain, "HH:mm").subtract(1, "years");
+  var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+  var remainder = diffTime % Tfrequency;
+  var minutesAway = Tfrequency - remainder;
+  var nextArrival = moment().add(minutesAway, "minutes");
 
-trainNameTd = $("<td>").text(csv.trainName);
-destinationTd = $("<td>").text(csv.destination);
-frequencyTd = $("<td>").text(csv.frequency);
+  var tr = $("<tr>").append(
 
-  tr.append(trainNameTd, destinationTd, frequencyTd)
+  $("<td>").text(Tname),
+  $("<td>").text(Tdestination),
+  $("<td>").text(Tfrequency),
+  $("<td>").text(nextArrival), 
+  $("<td>").text(minutesAway),
 
-  $("tbody").append(tr);
-}, function (errorObject) {
-  console.log("Errors handled: " + errorObject.code);
+
+); $("tbody").append(tr);
+ 
 });
 
 
